@@ -1,0 +1,1 @@
+export const NEWS_LIST_SCREEN = 'NEWS_LIST_SCREEN';
