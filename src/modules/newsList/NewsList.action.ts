@@ -3,12 +3,26 @@ import {NEWS_STORE, REMOVED_SYMBOL} from '../../constants/Constants';
 import {getGlobalNewsUsingQuery} from '../../network';
 import {NewsApiResponseType, NewsItemType} from './NewsList.types';
 
-export const loadFreshBatch = async () => {
+export const getNews = async () => {
+  try {
+    if (await AsyncStorage.getItem(NEWS_STORE)) {
+      return await loadFromStorage();
+    } else {
+      return await loadFreshBatchFromApi();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const loadFreshBatchFromApi = async () => {
   await fetchAndStoreNewsResponse('everything');
   const news = await fetchFirstTenResponses();
   return news;
 };
-
+export const loadFromStorage = async () => {
+  const news = await fetchFirstTenResponses();
+  return news;
+};
 export const fetchAndStoreNewsResponse = async (query: string) => {
   try {
     const response = await getGlobalNewsUsingQuery(query);
@@ -65,39 +79,65 @@ export const fetchResponseLocally = async () => {
     console.error('Error storing News Response');
   }
 };
-export const fetchFirstTenResponses = async () => {
+export const fetchFirstTenResponses = async (): Promise<
+  NewsItemType[] | undefined
+> => {
   try {
-    const wholeResponse = (await fetchResponseLocally()) as NewsItemType[];
+    let wholeResponse = (await fetchResponseLocally()) as NewsItemType[];
+    let tenNews: NewsItemType[] = [];
+    let fetchedNotShownNewsIndexes: number[] = [];
     if (wholeResponse) {
-      const fetchedNews = wholeResponse
-        .filter((item: NewsItemType) => {
-          return !item?.pinned && !item?.deleted && !item?.shown;
-        })
-        .slice(0, 10)
-        .map((item: NewsItemType) => {
-          return {...item, shown: true};
-        });
-      return fetchedNews;
+      wholeResponse.forEach((item: NewsItemType, index: number) => {
+        if (!item?.pinned && !item?.deleted && !item?.shown) {
+          fetchedNotShownNewsIndexes.push(index);
+        }
+      });
+      fetchedNotShownNewsIndexes.forEach((item: number) => {
+        if (tenNews.length < 10) {
+          tenNews.push(wholeResponse[item]);
+          wholeResponse[item] = {...wholeResponse[item], shown: true};
+        }
+      });
+      console.log(tenNews.length);
+      if (tenNews.length < 10) {
+        return await loadFreshBatchFromApi();
+      } else {
+        storeResponseLocally(wholeResponse);
+        return tenNews;
+      }
     }
   } catch (error) {
     console.error('Error storing News Response');
     return [];
   }
 };
-export const fetchFiveNewResponses = async (
-  previousResponse: NewsItemType[],
-) => {
+export const fetchFiveNewResponses = async (previousNews: NewsItemType[]) => {
   try {
-    if (previousResponse) {
-      const fetchedNews = previousResponse
-        .filter((item: NewsItemType) => {
-          return !item?.pinned && !item?.deleted && !item?.shown;
-        })
-        .slice(0, 5)
-        .map((item: NewsItemType) => {
-          return {...item, shown: true};
-        });
-      return fetchedNews;
+    let wholeResponse = (await fetchResponseLocally()) as NewsItemType[];
+    let fiveNews: NewsItemType[] = [];
+    let fetchedNotShownNewsIndexes: number[] = [];
+    if (wholeResponse) {
+      wholeResponse.forEach((item: NewsItemType, index: number) => {
+        if (!item?.pinned && !item?.deleted && !item?.shown) {
+          fetchedNotShownNewsIndexes.push(index);
+        }
+      });
+      fetchedNotShownNewsIndexes.forEach((item: number) => {
+        if (fiveNews.length < 5) {
+          fiveNews.push(wholeResponse[item]);
+          wholeResponse[item] = {...wholeResponse[item], shown: true};
+        }
+      });
+      console.log(fiveNews.length);
+      if (fiveNews.length < 5) {
+        return await loadFreshBatchFromApi();
+      } else {
+        storeResponseLocally(wholeResponse);
+        let modifiedArray = previousNews;
+        modifiedArray = [...fiveNews, ...modifiedArray];
+        modifiedArray.splice(-5);
+        return modifiedArray;
+      }
     }
   } catch (error) {
     console.error('Error storing News Response');

@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import MainHeader from './components/MainHeader';
 import NewsListItem from './components/NewsListItem';
 import {WHITE} from '../../constants/ColorConstants';
-import {loadFreshBatch} from './NewsList.action';
+import {fetchFiveNewResponses, getNews} from './NewsList.action';
 import {NewsItemType} from './NewsList.types';
 import LoadingShimmer from './components/LoadingShimmer';
 import ErrorView from './components/ErrorView';
@@ -13,13 +13,18 @@ const NewListScreen = () => {
   const [listLoading, setListLoading] = useState<boolean>(true);
   const [newsList, setNewsList] = useState<NewsItemType[]>([]);
   const [error, setError] = useState<boolean>(false);
-  const onClickReloadIcon = () => {
-    setIconLoading(!iconLoading);
+  const onClickReloadIcon = async () => {
+    setIconLoading(true);
+    const newList = (await fetchFiveNewResponses(newsList)) || [];
+    setTimeout(() => {
+      setNewsList(newList);
+      setIconLoading(false);
+    }, 1000);
   };
   useEffect(() => {
     setListLoading(true);
     const loadNews = async () => {
-      const news = await loadFreshBatch();
+      const news = await getNews();
       if (news && news?.length > 0) {
         setNewsList(news);
         setListLoading(false);
@@ -28,6 +33,7 @@ const NewListScreen = () => {
         setError(true);
       }
     };
+
     loadNews();
   }, []);
   const renderNewsItem = useCallback(
