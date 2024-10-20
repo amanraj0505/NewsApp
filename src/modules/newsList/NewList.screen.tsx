@@ -2,6 +2,7 @@ import {FlatList, SafeAreaView, StyleSheet} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import MainHeader from './components/MainHeader';
 import NewsListItem from './components/NewsListItem';
+import {WHITE} from '../../constants/ColorConstants';
 
 const NewListScreen = () => {
   const [iconLoading, setIconLoading] = useState<boolean>(false);
@@ -63,5 +64,6 @@ export default NewListScreen;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    backgroundColor: WHITE,
   },
 });
