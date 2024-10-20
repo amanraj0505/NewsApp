@@ -10,6 +10,9 @@ export type NewsItemType = {
   urlToImage?: string;
   publishedAt?: string;
   content?: string;
+  pinned?: boolean;
+  shown?: boolean;
+  deleted?: boolean;
 };
 export type NewsApiResponseType = {
   status: string;

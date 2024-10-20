@@ -18,7 +18,7 @@ const NewsListItem: React.FC<ListItemType> = ({newsItem}) => {
         <View style={styles.itemTopView}>
           <View style={styles.startView}>
             <Image
-              source={require('../../../assets/images/refresh.png')}
+              source={require('../../../assets/images//megaphone.png')}
               style={styles.topViewIcon}
               resizeMode={'contain'}
             />

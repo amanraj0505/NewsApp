@@ -70,19 +70,19 @@ const styles = StyleSheet.create({
   newsTitleStyle: {
     borderRadius: 5,
     width: '100%',
-    height: 20,
+    height: 24.3,
   },
   newsTitleStyle1: {
     borderRadius: 5,
     width: '80%',
     marginTop: 4,
-    height: 20,
+    height: 24.3,
   },
   newsTitleStyle2: {
     borderRadius: 5,
     width: '50%',
     marginTop: 4,
-    height: 20,
+    height: 24.3,
   },
   thirdRow: {
     marginTop: 10,
