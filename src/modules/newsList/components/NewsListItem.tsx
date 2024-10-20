@@ -31,8 +31,16 @@ const NewsListItem: React.FC<ListItemType> = ({newsItem}) => {
           </Text>
         </View>
         <View style={styles.secondRow}>
-          <Text style={styles.newsTitleStyle}>{newsItem.description}</Text>
-          <Image source={{uri: newsItem.urlToImage}} style={styles.newsImage} />
+          <Text style={styles.newsTitleStyle}>{newsItem.title}</Text>
+          <Image
+            source={
+              newsItem?.urlToImage
+                ? {uri: newsItem.urlToImage}
+                : require('../../../assets/images/newspaper.png')
+            }
+            style={styles.newsImage}
+            resizeMode={newsItem.urlToImage ? 'cover' : 'contain'}
+          />
         </View>
         <View style={styles.thirdRow}>
           <Text style={styles.authorName}> {newsItem.author}</Text>

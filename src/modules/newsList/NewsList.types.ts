@@ -11,3 +11,8 @@ export type NewsItemType = {
   publishedAt?: string;
   content?: string;
 };
+export type NewsApiResponseType = {
+  status: string;
+  totalResults: number;
+  articles: NewsItemType[];
+};
