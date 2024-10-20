@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NEWS_STORE, REMOVED_SYMBOL} from '../../constants/Constants';
+import {
+  NEWS_STORE,
+  PINNED_NEWS,
+  REMOVED_SYMBOL,
+} from '../../constants/Constants';
 import {getGlobalNewsUsingQuery} from '../../network';
 import {NewsApiResponseType, NewsItemType} from './NewsList.types';
 
@@ -51,7 +55,6 @@ const filterInvalidResponses = (response: NewsApiResponseType) => {
           ...item,
           shown: false,
           pinned: false,
-          deleted: false,
         };
       });
     return validArticle;
@@ -141,6 +144,53 @@ export const fetchFiveNewResponses = async (previousNews: NewsItemType[]) => {
     }
   } catch (error) {
     console.error('Error storing News Response');
+    return [];
+  }
+};
+export const addToPinnedNews = async (item: NewsItemType) => {
+  try {
+    const pinnedNewsString = await AsyncStorage.getItem(PINNED_NEWS);
+    if (pinnedNewsString) {
+      const pinnedNews = JSON.parse(pinnedNewsString);
+      AsyncStorage.setItem(
+        PINNED_NEWS,
+        JSON.stringify([...pinnedNews, {...item, pinned: true}]),
+      );
+    } else {
+      AsyncStorage.setItem(
+        PINNED_NEWS,
+        JSON.stringify([{...item, pinned: true}]),
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const removeFromPinnedNews = async (index: number) => {
+  try {
+    const pinnedNewsString = await AsyncStorage.getItem(PINNED_NEWS);
+    if (pinnedNewsString) {
+      let pinnedNews = JSON.parse(pinnedNewsString);
+      pinnedNews.splice(index, 1);
+      AsyncStorage.setItem(PINNED_NEWS, JSON.stringify([...pinnedNews]));
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getPinnedNews = async () => {
+  try {
+    const pinnedNewsString = await AsyncStorage.getItem(PINNED_NEWS);
+    if (pinnedNewsString) {
+      const pinnedNews = JSON.parse(pinnedNewsString);
+      return pinnedNews;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };

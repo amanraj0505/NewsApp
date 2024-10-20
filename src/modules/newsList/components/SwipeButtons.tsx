@@ -18,10 +18,17 @@ type SwipeButtonProps = {
     | ((event: GestureResponderEvent) => void)
     | null
     | undefined;
+  pinned: boolean | undefined;
+  onUnPinnedButtonClick:
+    | ((event: GestureResponderEvent) => void)
+    | null
+    | undefined;
 };
 const SwipeButtons: React.FC<SwipeButtonProps> = ({
   onDeleteButtonClicked,
   onPinButtonClicked,
+  onUnPinnedButtonClick,
+  pinned,
 }) => {
   return (
     <View style={styles.buttonContainer}>
@@ -34,13 +41,15 @@ const SwipeButtons: React.FC<SwipeButtonProps> = ({
           />
           <Text style={styles.buttonText}>{'Delete'}</Text>
         </Pressable>
-        <Pressable style={styles.buttonStyle} onPress={onPinButtonClicked}>
+        <Pressable
+          style={styles.buttonStyle}
+          onPress={pinned ? onUnPinnedButtonClick : onPinButtonClicked}>
           <Image
             source={require('../../../assets/images/pin.png')}
             style={[styles.iconStyle, {marginBottom: 4}]}
             resizeMode={'contain'}
           />
-          <Text style={styles.buttonText}>{'Pin'}</Text>
+          <Text style={styles.buttonText}>{pinned ? 'Unpin' : 'Pin'}</Text>
         </Pressable>
       </View>
     </View>

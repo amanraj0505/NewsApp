@@ -9,18 +9,21 @@ import {
 } from '../../../constants/ColorConstants';
 import {ListItem} from '@rneui/themed';
 import SwipeButtons from './SwipeButtons';
+import PinnedNewsHeading from './PinnedNewsHeading';
 type ListItemType = {
   newsItem: NewsItemType;
   onRightSwipeDeleteClicked: Function;
   onRightSwipePinClicked: Function;
+  onRightSwipeUnpinClicked: Function;
 };
 const NewsListItem: React.FC<ListItemType> = ({
   newsItem,
   onRightSwipeDeleteClicked,
   onRightSwipePinClicked,
+  onRightSwipeUnpinClicked,
 }) => {
   const rightContent = useCallback(
-    (reset: any) => {
+    (reset: any, pinned: boolean | undefined) => {
       return (
         <SwipeButtons
           onDeleteButtonClicked={() => {
@@ -31,17 +34,27 @@ const NewsListItem: React.FC<ListItemType> = ({
             reset();
             onRightSwipePinClicked();
           }}
+          pinned={pinned}
+          onUnPinnedButtonClick={() => {
+            reset();
+            onRightSwipeUnpinClicked();
+          }}
         />
       );
     },
-    [onRightSwipeDeleteClicked, onRightSwipePinClicked],
+    [
+      onRightSwipeDeleteClicked,
+      onRightSwipePinClicked,
+      onRightSwipeUnpinClicked,
+    ],
   );
   return (
     <ListItem.Swipeable
       containerStyle={styles.itemContainer}
-      rightContent={rightContent}
+      rightContent={reset => rightContent(reset, newsItem?.pinned)}
       rightWidth={95}>
       <ListItem.Content>
+        {newsItem?.pinned && <PinnedNewsHeading />}
         <View style={styles.itemTopView}>
           <View style={styles.startView}>
             <Image

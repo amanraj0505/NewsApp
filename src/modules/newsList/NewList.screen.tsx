@@ -3,7 +3,13 @@ import React, {useCallback, useEffect, useState} from 'react';
 import MainHeader from './components/MainHeader';
 import NewsListItem from './components/NewsListItem';
 import {WHITE} from '../../constants/ColorConstants';
-import {fetchFiveNewResponses, getNews} from './NewsList.action';
+import {
+  addToPinnedNews,
+  fetchFiveNewResponses,
+  getNews,
+  getPinnedNews,
+  removeFromPinnedNews,
+} from './NewsList.action';
 import {NewsItemType} from './NewsList.types';
 import LoadingShimmer from './components/LoadingShimmer';
 import ErrorView from './components/ErrorView';
@@ -16,8 +22,9 @@ const NewListScreen = () => {
   const onClickReloadIcon = async () => {
     setIconLoading(true);
     const newList = (await fetchFiveNewResponses(newsList)) || [];
+    const pinnedList = (await getPinnedNews()) || [];
     setTimeout(() => {
-      setNewsList(newList);
+      setNewsList([...pinnedList, ...newList]);
       setIconLoading(false);
     }, 1000);
   };
@@ -26,7 +33,8 @@ const NewListScreen = () => {
     const loadNews = async () => {
       const news = await getNews();
       if (news && news?.length > 0) {
-        setNewsList(news);
+        const pinnedList = (await getPinnedNews()) || [];
+        setNewsList([...pinnedList, ...news]);
         setListLoading(false);
       } else {
         setListLoading(false);
@@ -49,7 +57,20 @@ const NewListScreen = () => {
           onRightSwipeDeleteClicked={() => {
             deleteItem(index);
           }}
-          onRightSwipePinClicked={() => {}}
+          onRightSwipePinClicked={async () => {
+            await addToPinnedNews(item);
+            deleteItem(index);
+            setNewsList(previousList => [
+              {...item, pinned: true},
+              ...previousList,
+            ]);
+          }}
+          onRightSwipeUnpinClicked={async () => {
+            await removeFromPinnedNews(index);
+            const pinnedList = (await getPinnedNews()) || [];
+            const news = (await getNews()) || [];
+            setNewsList([...pinnedList, ...news]);
+          }}
         />
       );
     },
