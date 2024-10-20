@@ -36,10 +36,22 @@ const NewListScreen = () => {
 
     loadNews();
   }, []);
+  const deleteItem = (index: number) => {
+    const tempList = newsList;
+    tempList.splice(index, 1);
+    setNewsList([...tempList]);
+  };
   const renderNewsItem = useCallback(
-    //@ts-ignore
-    ({item}) => {
-      return <NewsListItem newsItem={item} />;
+    ({item, index}: {item: NewsItemType; index: number}) => {
+      return (
+        <NewsListItem
+          newsItem={item}
+          onRightSwipeDeleteClicked={() => {
+            deleteItem(index);
+          }}
+          onRightSwipePinClicked={() => {}}
+        />
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [newsList],
@@ -62,6 +74,7 @@ const NewListScreen = () => {
           data={newsList}
           renderItem={renderNewsItem}
           showsVerticalScrollIndicator={false}
+          keyExtractor={(item: NewsItemType, index: number) => String(index)}
         />
       )}
     </SafeAreaView>

@@ -1,5 +1,5 @@
 import {View, StyleSheet, Image, Text} from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {NewsItemType} from '../NewsList.types';
 import moment from 'moment';
 import {
@@ -8,12 +8,39 @@ import {
   SUB_TEXT_COLOR,
 } from '../../../constants/ColorConstants';
 import {ListItem} from '@rneui/themed';
+import SwipeButtons from './SwipeButtons';
 type ListItemType = {
   newsItem: NewsItemType;
+  onRightSwipeDeleteClicked: Function;
+  onRightSwipePinClicked: Function;
 };
-const NewsListItem: React.FC<ListItemType> = ({newsItem}) => {
+const NewsListItem: React.FC<ListItemType> = ({
+  newsItem,
+  onRightSwipeDeleteClicked,
+  onRightSwipePinClicked,
+}) => {
+  const rightContent = useCallback(
+    (reset: any) => {
+      return (
+        <SwipeButtons
+          onDeleteButtonClicked={() => {
+            reset();
+            onRightSwipeDeleteClicked();
+          }}
+          onPinButtonClicked={() => {
+            reset();
+            onRightSwipePinClicked();
+          }}
+        />
+      );
+    },
+    [onRightSwipeDeleteClicked, onRightSwipePinClicked],
+  );
   return (
-    <ListItem.Swipeable containerStyle={styles.itemContainer}>
+    <ListItem.Swipeable
+      containerStyle={styles.itemContainer}
+      rightContent={rightContent}
+      rightWidth={95}>
       <ListItem.Content>
         <View style={styles.itemTopView}>
           <View style={styles.startView}>
