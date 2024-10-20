@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NEWS_STORE,
   PINNED_NEWS,
+  QUERY_ARRAY,
   REMOVED_SYMBOL,
 } from '../../constants/Constants';
 import {getGlobalNewsUsingQuery} from '../../network';
@@ -19,7 +20,9 @@ export const getNews = async () => {
   }
 };
 export const loadFreshBatchFromApi = async () => {
-  await fetchAndStoreNewsResponse('everything');
+  await fetchAndStoreNewsResponse(
+    QUERY_ARRAY[Math.floor(Math.random() * (6 - 0 + 1) + 0)],
+  );
   const news = await fetchFirstTenResponses();
   return news;
 };

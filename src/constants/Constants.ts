@@ -5,3 +5,12 @@ export const API_KEY = '5c659f698d0549b0895d0fcb6ba84e20';
 export const REMOVED_SYMBOL = '[Removed]';
 export const NEWS_STORE = 'NEWS_STORE';
 export const PINNED_NEWS = 'PINNED_NEWS';
+export const QUERY_ARRAY = [
+  'everything',
+  'tech',
+  'economics',
+  'politics',
+  'india',
+  'china',
+  'government',
+];
