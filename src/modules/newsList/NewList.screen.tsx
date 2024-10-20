@@ -1,4 +1,4 @@
-import {FlatList, SafeAreaView, StyleSheet} from 'react-native';
+import {FlatList, SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import MainHeader from './components/MainHeader';
 import NewsListItem from './components/NewsListItem';
@@ -80,6 +80,7 @@ const NewListScreen = () => {
   return (
     <SafeAreaView style={styles.mainContainer}>
       <MainHeader loading={iconLoading} onClickRightIcon={onClickReloadIcon} />
+      <StatusBar backgroundColor={WHITE} barStyle={'dark-content'} />
       {listLoading ? (
         <>
           <LoadingShimmer />
