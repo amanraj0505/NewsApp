@@ -1,5 +1,5 @@
 import {FlatList, SafeAreaView, StatusBar, StyleSheet} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import MainHeader from './components/MainHeader';
 import NewsListItem from './components/NewsListItem';
 import {WHITE} from '../../constants/ColorConstants';
@@ -19,15 +19,35 @@ const NewListScreen = () => {
   const [listLoading, setListLoading] = useState<boolean>(true);
   const [newsList, setNewsList] = useState<NewsItemType[]>([]);
   const [error, setError] = useState<boolean>(false);
-  const onClickReloadIcon = async () => {
+  const intervelRef = useRef<any>();
+  const newsListRef = useRef<NewsItemType[]>();
+  const onClickReloadIcon = async (newsArray: NewsItemType[]) => {
     setIconLoading(true);
-    const newList = (await fetchFiveNewResponses(newsList)) || [];
+    const newList = (await fetchFiveNewResponses(newsArray)) || [];
     const pinnedList = (await getPinnedNews()) || [];
     setTimeout(() => {
       setNewsList([...pinnedList, ...newList]);
       setIconLoading(false);
     }, 1000);
   };
+  const startTimer = () => {
+    intervelRef.current = setInterval(async () => {
+      onClickReloadIcon(newsListRef?.current || []);
+    }, 10000);
+  };
+  const clearTimer = () => {
+    clearInterval(intervelRef.current);
+  };
+  useEffect(() => {
+    newsListRef.current = newsList;
+  }, [newsList]);
+  useEffect(() => {
+    startTimer();
+    return () => {
+      clearTimer();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     setListLoading(true);
     const loadNews = async () => {
@@ -79,7 +99,14 @@ const NewListScreen = () => {
   );
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <MainHeader loading={iconLoading} onClickRightIcon={onClickReloadIcon} />
+      <MainHeader
+        loading={iconLoading}
+        onClickRightIcon={() => {
+          clearTimer();
+          onClickReloadIcon(newsList);
+          startTimer();
+        }}
+      />
       <StatusBar backgroundColor={WHITE} barStyle={'dark-content'} />
       {listLoading ? (
         <>
