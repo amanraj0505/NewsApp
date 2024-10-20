@@ -109,15 +109,17 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   sourceNameText: {
-    fontFamily: 'Satoshi',
+    fontFamily: 'Satoshi-Variable',
     fontSize: 14,
     fontWeight: '400',
+    lineHeight: 18.9,
     color: HEADER_SMALL,
   },
   time: {
-    fontFamily: 'Satoshi',
+    fontFamily: 'Satoshi-Variable',
     fontSize: 12,
     fontWeight: '400',
+    lineHeight: 16.2,
     color: BLACK,
   },
   secondRow: {
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   },
   newsTitleStyle: {
     flex: 1,
-    fontFamily: 'Satoshi',
+    fontFamily: 'Satoshi-Variable',
     fontWeight: '700',
     fontSize: 18,
     lineHeight: 24.3,
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   authorName: {
-    fontFamily: 'Satoshi',
+    fontFamily: 'Satoshi-Variable',
     fontWeight: '500',
     fontSize: 12,
     lineHeight: 16.2,

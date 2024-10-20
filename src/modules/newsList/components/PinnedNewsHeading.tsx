@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   textStyle: {
-    fontFamily: 'Satoshi',
+    fontFamily: 'Satoshi-Variable',
     fontWeight: '400',
     fontSize: 12,
     lineHeight: 16.2,
