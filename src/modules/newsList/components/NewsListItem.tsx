@@ -52,7 +52,8 @@ const NewsListItem: React.FC<ListItemType> = ({
     <ListItem.Swipeable
       containerStyle={styles.itemContainer}
       rightContent={reset => rightContent(reset, newsItem?.pinned)}
-      rightWidth={95}>
+      rightWidth={95}
+      bottomDivider={true}>
       <ListItem.Content>
         {newsItem?.pinned && <PinnedNewsHeading />}
         <View style={styles.itemTopView}>
